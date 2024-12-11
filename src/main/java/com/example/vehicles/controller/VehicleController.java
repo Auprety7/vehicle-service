@@ -54,11 +54,13 @@ public class VehicleController {
             @RequestParam(required = false) String description,
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) Integer minYear,
+            @RequestParam(required = false) Integer maxYear,
             Pageable pageable) {
         if (field != null && value != null) {
             return vehicleService.searchBySingleField(field, value, pageable);
         } else {
-            return vehicleService.searchWithAndConditions(manufacturer, model, type, description, minPrice, maxPrice, pageable);
+            return vehicleService.searchWithAndConditions(manufacturer, model, type, description, minPrice, maxPrice, minYear,maxYear, pageable);
         }
     }
 

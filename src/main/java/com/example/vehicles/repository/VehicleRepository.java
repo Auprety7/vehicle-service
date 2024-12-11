@@ -14,7 +14,8 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
     Page<Vehicle> findByModelIgnoreCase(String model, Pageable pageable);
     Page<Vehicle> findByTypeIgnoreCase(String type, Pageable pageable);
     Page<Vehicle> findByDescriptionIgnoreCase(String description, Pageable pageable);
-    Page<Vehicle> findByPrice(Double price, Pageable pageable); // Exact price match
+    Page<Vehicle> findByPrice(Double price, Pageable pageable);
+    Page<Vehicle> findByYear(Integer year, Pageable pageable);
 
     @Query("SELECT v FROM Vehicle v WHERE " +
             "(:manufacturer IS NULL OR LOWER(v.manufacturer) LIKE LOWER(CONCAT('%', :manufacturer, '%'))) AND " +
@@ -22,7 +23,10 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
             "(:type IS NULL OR LOWER(v.type) LIKE LOWER(CONCAT('%', :type, '%'))) AND " +
             "(:description IS NULL OR LOWER(v.description) LIKE LOWER(CONCAT('%', :description, '%'))) AND " +
             "(:minPrice IS NULL OR v.price >= :minPrice) AND " +
-            "(:maxPrice IS NULL OR v.price <= :maxPrice)")
+            "(:maxPrice IS NULL OR v.price <= :maxPrice) AND" +
+            "(:minYear IS NULL OR v.year >= :minYear) AND " +
+            "(:maxYear IS NULL OR v.year <= :maxYear)"
+    )
     Page<Vehicle> searchWithAndConditions(
             String manufacturer,
             String model,
@@ -30,6 +34,8 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
             String description,
             Double minPrice,
             Double maxPrice,
+            Integer minYear,
+            Integer maxYear,
             Pageable pageable
     );
 }

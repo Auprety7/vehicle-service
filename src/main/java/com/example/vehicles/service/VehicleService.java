@@ -27,5 +27,7 @@ public interface VehicleService {
             String description,
             Double minPrice,
             Double maxPrice,
+            Integer minYear,
+            Integer maxYear,
             Pageable pageable);
 }

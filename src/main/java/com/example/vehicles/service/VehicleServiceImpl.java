@@ -58,7 +58,7 @@ public class VehicleServiceImpl implements VehicleService {
         updateRequest.getType().ifPresent(existingVehicle::setType);
         updateRequest.getPrice().ifPresent(existingVehicle::setPrice);
         updateRequest.getDescription().ifPresent(existingVehicle::setDescription);
-
+        checkForInputExceptions(existingVehicle);
         return vehicleRepository.save(existingVehicle);
     }
 
@@ -91,6 +91,9 @@ public class VehicleServiceImpl implements VehicleService {
                 } catch (NumberFormatException e) {
                     throw new InputValidationException("Price must be a valid number: " + value);
                 }
+
+            case "year":
+                return vehicleRepository.findByYear(Integer.valueOf(value), pageable);
             default:
                 throw new InputValidationException("Invalid field for search: " + field);
         }
@@ -104,8 +107,10 @@ public class VehicleServiceImpl implements VehicleService {
             String description,
             Double minPrice,
             Double maxPrice,
+            Integer minYear,
+            Integer maxYear,
             Pageable pageable) {
-        return vehicleRepository.searchWithAndConditions(manufacturer, model, type, description, minPrice, maxPrice, pageable);
+        return vehicleRepository.searchWithAndConditions(manufacturer, model, type, description, minPrice, maxPrice, minYear, maxYear,pageable);
     }
 
     @Override
