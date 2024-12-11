@@ -109,6 +109,94 @@ paths:
         '404':
           description: Vehicle not found.
 
+  /vehicles/search:
+    get:
+      summary: Search for vehicles
+      description: Search for vehicles using various optional filters. Supports searching by a single field or multiple conditions.
+      parameters:
+        - name: field
+          in: query
+          required: false
+          schema:
+            type: string
+          description: The field name to search (e.g., "manufacturer" or "model").
+        - name: value
+          in: query
+          required: false
+          schema:
+            type: string
+          description: The value to match for the specified field.
+        - name: manufacturer
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by manufacturer.
+        - name: model
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by vehicle model.
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by vehicle type.
+        - name: description
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by description.
+        - name: minPrice
+          in: query
+          required: false
+          schema:
+            type: number
+          description: Minimum price filter.
+        - name: maxPrice
+          in: query
+          required: false
+          schema:
+            type: number
+          description: Maximum price filter.
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+          description: Page number for pagination.
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+          description: Number of items per page.
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Vehicle'
+                  totalElements:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  pageNumber:
+                    type: integer
+        '400':
+          description: Invalid query parameters.
+
 components:
   schemas:
     Vehicle:
