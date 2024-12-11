@@ -15,4 +15,10 @@ public class GlobalExceptionHandler {
     public Map<String, String> handleValidationException(InputValidationException ex) {
         return ex.getErrors();
     }
+
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Object handleRuntimeException(BadRequestException ex) {
+        return ex.getMessage();
+    }
 }

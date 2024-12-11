@@ -23,6 +23,7 @@ public class Vehicle {
 
     @Min(value = 1886, message = "Year must be greater than 1886")  // First car invented in 1886
     @Max(value = 2100, message = "Year must be realistic")
+    @Column(name = "\"year\"", nullable = false)
     private Integer year;
 
     @NotBlank(message = "Type is required")

@@ -1,6 +1,6 @@
 package com.example.vehicles.service;
 
-import com.example.vehicles.exception.InputValidationException;
+import com.example.vehicles.exception.*;
 import com.example.vehicles.model.Vehicle;
 import com.example.vehicles.model.VehicleUpdateRequest;
 import com.example.vehicles.repository.VehicleRepository;
@@ -24,6 +24,7 @@ public class VehicleServiceImpl implements VehicleService {
     @Autowired
     private Validator validator;
 
+
     @Autowired
     public VehicleServiceImpl(VehicleRepository vehicleRepository) {
         this.vehicleRepository = vehicleRepository;
@@ -32,6 +33,7 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public Vehicle addVehicle(Vehicle vehicle) {
         checkForInputExceptions(vehicle);
+        System.out.println("here");
         return vehicleRepository.save(vehicle);
     }
 
@@ -43,7 +45,7 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public Vehicle getVehicleById(Long id) {
         return vehicleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Vehicle not found with id: " + id));
+                .orElseThrow(() -> new BadRequestException("Vehicle not found with id: " + id));
     }
 
     @Override
@@ -75,22 +77,22 @@ public class VehicleServiceImpl implements VehicleService {
     public Page<Vehicle> searchBySingleField(String field, String value, Pageable pageable) {
         switch (field.toLowerCase()) {
             case "manufacturer":
-                return vehicleRepository.findByManufacturerContainingIgnoreCase(value, pageable);
+                return vehicleRepository.findByManufacturerIgnoreCase(value, pageable);
             case "model":
-                return vehicleRepository.findByModelContainingIgnoreCase(value, pageable);
+                return vehicleRepository.findByModelIgnoreCase(value, pageable);
             case "type":
-                return vehicleRepository.findByTypeContainingIgnoreCase(value, pageable);
+                return vehicleRepository.findByTypeIgnoreCase(value, pageable);
             case "description":
-                return vehicleRepository.findByDescriptionContainingIgnoreCase(value, pageable);
+                return vehicleRepository.findByDescriptionIgnoreCase(value, pageable);
             case "price":
                 try {
                     Double price = Double.parseDouble(value);
                     return vehicleRepository.findByPrice(price, pageable);
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Price must be a valid number: " + value);
+                    throw new InputValidationException("Price must be a valid number: " + value);
                 }
             default:
-                throw new IllegalArgumentException("Invalid field for search: " + field);
+                throw new InputValidationException("Invalid field for search: " + field);
         }
     }
 
@@ -111,7 +113,7 @@ public class VehicleServiceImpl implements VehicleService {
         if (vehicleRepository.existsById(id)) {
             vehicleRepository.deleteById(id);
         } else {
-            throw new RuntimeException("Vehicle with ID " + id + " not found");
+            throw new BadRequestException("Vehicle with ID " + id + " not found");
         }
     }
 }
