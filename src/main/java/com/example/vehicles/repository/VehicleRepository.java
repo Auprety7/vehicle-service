@@ -10,14 +10,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 
-    // Single-field search methods
-    Page<Vehicle> findByManufacturerContainingIgnoreCase(String manufacturer, Pageable pageable);
-    Page<Vehicle> findByModelContainingIgnoreCase(String model, Pageable pageable);
-    Page<Vehicle> findByTypeContainingIgnoreCase(String type, Pageable pageable);
-    Page<Vehicle> findByDescriptionContainingIgnoreCase(String description, Pageable pageable);
+    Page<Vehicle> findByManufacturerIgnoreCase(String manufacturer, Pageable pageable);
+    Page<Vehicle> findByModelIgnoreCase(String model, Pageable pageable);
+    Page<Vehicle> findByTypeIgnoreCase(String type, Pageable pageable);
+    Page<Vehicle> findByDescriptionIgnoreCase(String description, Pageable pageable);
     Page<Vehicle> findByPrice(Double price, Pageable pageable); // Exact price match
 
-    // Multi-field AND search
     @Query("SELECT v FROM Vehicle v WHERE " +
             "(:manufacturer IS NULL OR LOWER(v.manufacturer) LIKE LOWER(CONCAT('%', :manufacturer, '%'))) AND " +
             "(:model IS NULL OR LOWER(v.model) LIKE LOWER(CONCAT('%', :model, '%'))) AND " +

@@ -1,0 +1,139 @@
+openapi: 3.0.0
+info:
+  title: Vehicle Service API
+  version: 1.0.0
+  description: API for managing vehicles including CRUD operations.
+
+paths:
+  /vehicles:
+    get:
+      summary: Get all vehicles
+      description: Retrieve a list of all vehicles with optional filters and sorting.
+      parameters:
+        - name: manufacturer
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by manufacturer.
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by vehicle type.
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [price, year]
+          description: Sort vehicles by price or year.
+      responses:
+        '200':
+          description: List of vehicles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vehicle'
+    post:
+      summary: Create a new vehicle
+      description: Add a new vehicle to the database.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vehicle'
+      responses:
+        '201':
+          description: Vehicle created successfully.
+        '400':
+          description: Validation error.
+
+  /vehicles/{id}:
+    get:
+      summary: Get a specific vehicle
+      description: Retrieve a vehicle by its unique ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Vehicle details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+        '404':
+          description: Vehicle not found.
+    put:
+      summary: Update a vehicle
+      description: Update the details of a vehicle by its unique ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vehicle'
+      responses:
+        '200':
+          description: Vehicle updated successfully.
+        '400':
+          description: Validation error.
+        '404':
+          description: Vehicle not found.
+    delete:
+      summary: Delete a vehicle
+      description: Remove a vehicle from the database by its unique ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Vehicle deleted successfully.
+        '404':
+          description: Vehicle not found.
+
+components:
+  schemas:
+    Vehicle:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        manufacturer:
+          type: string
+          example: "Toyota"
+        model:
+          type: string
+          example: "Camry"
+        year:
+          type: integer
+          minimum: 1900
+          example: 2023
+        type:
+          type: string
+          example: "sedan"
+        price:
+          type: number
+          minimum: 0
+          example: 25000.99
+        description:
+          type: string
+          example: "A reliable family car."
